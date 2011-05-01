@@ -1,0 +1,1090 @@
+/*	Totalistic Cellular Automata	*/
+//
+#include <iostream>
+#include <stdlib.h>
+#include <math.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#ifdef __APPLE__
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+
+#include <pthread.h>
+
+#include "myCam.h"
+//#include "solver.h"
+
+#define PI 3.141592654f
+#define setRule 10		//59 //14 //79
+#define IX2(i,j,k) (i + N*j + N*N*k)
+
+using namespace std;
+
+/* global variables */
+
+static int N;
+static float _angle, alpha;
+static int alphaFlag;
+static bool source;
+static int dvel;
+
+static bool * states, * states_prev;
+static int mouse_down[3];
+
+GLfloat LightAmbient[]=		{ 0.5f, 0.5f, 0.5f, 1.0f };
+GLfloat LightDiffuse[]=		{ 1.0f, 1.0f, 1.0f, 1.0f };
+GLfloat LightSpecular[] =	{ 1.0f, 1.0f, 1.0f , 1.0f};
+GLfloat LightPosition[]=	{ -0.55f, -0.55f, 0.55f, 1.0f};
+GLfloat LightPosition2[]=	{ 0.0f, 0.0f, 0.0f, 1.0f};
+
+
+int key_flag;
+int width = 680;						// width of scene
+int height = 680;						// height of scene
+static int win_id;
+bool grid, bb;							// grid and billboarding flags
+
+static int colorS = 1;
+GLuint	texture;			// Storage For One Texture 
+
+// Cellular Variables
+
+static float ruleNumber;
+static bool * rule, ruleFlag;
+static int globalLoopCounter, neighborhood = 1;
+static int stateSpeed = 1;	// the speed at which new states are updated
+
+// Camera
+myCam my_cam;					// myCam Instance
+static int currX, currY, currZ, prevX, prevY, prevZ;
+
+/* macros */
+
+
+/*	Function Declarations	*/
+
+void drawScene();
+void mouseMovement(int x, int y);
+void mouseCameraMovement(int x, int y);
+void handleResize(int w, int h);
+void updateStates(int value);
+//static void idleFunc ( void );
+static void mouseFunc ( int button, int state, int x, int y );
+void initRendering();
+void calcReverseRule (bool *);
+
+/*	Functions for Randomization	*/
+
+float randomize() {
+	return (float) rand () / (GLfloat) RAND_MAX;
+//	return 0.7;
+}
+
+float randomize20() {
+	return ((float) rand () / (GLfloat) RAND_MAX) * 20.0;
+}
+
+float randomize360() {
+	return ((float) rand () / (GLfloat) RAND_MAX) * 360.0;
+}
+
+int randomizeN() {
+	return (int)(((float) rand () / (GLfloat) RAND_MAX) * N * N * N);
+}
+
+//----------------------------------------------------------------------------------------------------------\\
+// Loading the Texture \\
+
+GLuint loadTexture( const char * filename, int width, int height, int wrap )
+{
+    GLuint texture;
+    unsigned char * data;
+    FILE * file;
+	
+    //The following code will read in the RAW file
+    file = fopen( filename, "rb" );
+    if ( file == NULL ) return 0;
+    data = (unsigned char *)malloc( width * height * 3 );
+    fread( data, width * height * 3, 1, file );
+    fclose( file );
+    glGenTextures( 1, &texture ); //generate the texture with the loaded data
+	
+    glBindTexture( GL_TEXTURE_2D, texture ); //bind the texture to it’s array
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); //set texture environment parameters
+  
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST  );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+  
+	//	Here we are setting the parameter to repeat the texture instead of clamping the texture
+    //	to the edge of our shape. 
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap ? GL_REPEAT : GL_CLAMP );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap ? GL_REPEAT : GL_CLAMP );
+	
+	//	Generate the texture
+	gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, data );
+    free( data ); //free the texture
+	
+    return texture; //return whether it was successfull
+}
+
+void freeTexture( GLuint texture )
+{
+	glDeleteTextures( 1, &texture ); 
+}
+
+//---------------------------------------------------------------------------------------------------------//
+void billBoardBegin()
+{	
+	float modelview[16];
+	int i,j;
+	
+	// save the current modelview matrix
+	glPushMatrix();
+	
+	// get the current modelview matrix
+	glGetFloatv(GL_MODELVIEW_MATRIX , modelview);
+	
+	// Note that a row in the C convention is a column 
+	// in OpenGL convention (see the red book, pg.106 in version 1.2)
+	// right vector is [1,0,0]  (1st column)
+	// lookAt vector is [0,0,1] (3d column)
+	// leave the up vector unchanged (2nd column)
+	// notice the increment in i in the first cycle (i+=2)
+	for( i=0; i<3; i+=2 ) {
+		for( j=0; j<3; j++ ) {
+			if ( i==j )
+				modelview[i*4+j] = 1.0;
+			else
+				modelview[i*4+j] = 0.0;
+		}
+	}
+	// set the modelview matrix
+	glLoadMatrixf(modelview);
+}
+
+inline void billBoardEnd() {
+	
+	// restore the previously stored modelview matrix
+	glPopMatrix();
+}
+
+/*-------------------------------------------------------------------------*/
+/*	Calculate the Rule	*/
+// This creates the rule bits. you access the rule bit as a hash table where the key is obtained by calculating the 
+// number accroding to the live cells in the local neighborhood of thisCell, and then use the value in rule[128] to
+// get the value for the nextState note: RULE 6
+
+void calcRule (float ruleN)
+{
+	float temp = ruleN;
+	
+	for (int i = 0; i < 128; i++)
+	{
+		rule[i] = int (fmod(temp, 2));
+		temp /= 2.0f;
+	}
+//	calcReverseRule(rule);
+}
+
+void calcReverseRule (bool * rule)
+{	
+	bool ruleBits[128];
+	
+	for (int i=0 ; i<128 ; i++ ) {
+		ruleBits[i] = false;
+	}
+
+
+	float ruleNumberFromRuleBits = 0;
+	
+	for (int i = 0; i < 128; i++)
+	{
+		if (ruleBits[i]){
+			ruleNumberFromRuleBits += pow (2,i);
+		}
+	}
+}
+
+
+void *calcNextState (void * )
+{
+	int i, j, k, totalCellsAround = 0;
+	int size = N*N*N;
+
+	bool nextState = false;
+	
+	bool * s = states;
+	
+	bool initStates = false;
+	
+	int temp = N-1;
+	
+	// First setup the boundary conditions
+	for (int a=0 ; a<=(N-1) ; a++ ) {
+		for (int b=0 ; b<=(N-1) ; b++ ) {
+			
+			s[IX2(0  , a  , b  )] = initStates;
+			s[IX2(0  , 0  , a  )] = initStates;
+			
+			s[IX2(a  , 0  , b  )] = initStates;
+			s[IX2(a  , 0  , 0  )] = initStates;
+			
+			s[IX2(a  , b  , 0  )] = initStates;
+			s[IX2(0  , a  , 0  )] = initStates;
+
+			
+			s[IX2(temp, a  , b  )] = initStates;
+			s[IX2(a  , temp, b  )] = initStates;
+			s[IX2(a  , b  , temp)]  = initStates;
+
+			s[IX2(a  , temp, temp)] = initStates;
+			s[IX2(temp, a  , temp)] = initStates;
+			s[IX2(temp, temp, a  )] = initStates;				
+			
+			
+			s[IX2(0  , a  , temp)] = initStates;
+			s[IX2(temp, a  , 0)] = initStates;
+			
+			s[IX2(a  , 0  , temp)] = initStates;
+			s[IX2(a  , temp, 0  )] = initStates;
+			
+			s[IX2(0  , temp, a  )] = initStates;
+			s[IX2(temp, 0  , a  )] = initStates;
+		}
+	}
+	
+	s[IX2(0  , 0  , 0  )] = initStates; //(s[IX2(1,0,0)] && s[IX2(0,1,0)] && s[IX2(0,0,1)]);
+	s[IX2(0  , 0  , temp  )] = initStates; //(s[IX2(1,0,0)] && s[IX2(0,1,0)] && s[IX2(0,0,temp)]);
+	s[IX2(0  , temp  , 0  )] = initStates; //(s[IX2(1,0,0)] && s[IX2(0,temp,0)] && s[IX2(0,0,1)]);
+	s[IX2(0  , temp  , temp  )] = initStates; //(s[IX2(1,0,0)] && s[IX2(0,temp,0)] && s[IX2(0,0,temp)]);
+	s[IX2(temp  , 0  , 0  )] = initStates; // (s[IX2(temp,0,0)] && s[IX2(0,1,0)] && s[IX2(0,0,1)]);
+	s[IX2(temp  , 0  , temp  )] = initStates; //(s[IX2(temp,0,0)] && s[IX2(0,1,0)] && s[IX2(0,0,temp)]);
+	s[IX2(temp  , temp  , 0  )] = initStates; //(s[IX2(temp,0,0)] && s[IX2(0,temp,0)] && s[IX2(0,0,1)]);
+	s[IX2(temp  , temp  , temp  )] = initStates; //(s[IX2(temp,0,0)] && s[IX2(0,temp,0)] && s[IX2(0,0,temp)]);
+	
+	for ( i=0 ; i<=(size-1) ; i++ ) states_prev[i] = states[i];	
+	
+	if ((globalLoopCounter % stateSpeed  == 0) && (ruleFlag)) {		// check for ruleFlag and calculate next states
+			for ( i=1 ; i<=N-2 ; i++ ) {
+				for ( j=1 ; j<=N-2; j++ ) {
+					for ( k=1; k<=N-2 ; k++ ) {
+						
+						for (int tempi = -neighborhood; tempi <= neighborhood; tempi++){
+							for (int tempj = -neighborhood; tempj <= neighborhood; tempj++){
+								for (int tempk = -neighborhood; tempk <= neighborhood; tempk++){
+									
+									int iIndex = i+tempi;
+									int jIndex = j+tempj;
+									int kIndex = k+tempk;
+									
+									if (s[IX2(iIndex, jIndex, kIndex)]) ++totalCellsAround;
+								}
+							}
+						}
+						
+						if (totalCellsAround == 1 || totalCellsAround == 12 ) nextState = true;
+						else nextState = false;
+						
+						states_prev[IX2(i,j,k)] = nextState;
+						totalCellsAround = 0;
+					}
+				}
+			}
+			for ( i=0 ; i<=(size-1) ; i++ ) states[i] = states_prev[i];			
+	}
+	globalLoopCounter++;
+
+	pthread_exit(NULL);
+}
+
+/*
+ ----------------------------------------------------------------------
+ free/clear/allocate simulation data
+ ----------------------------------------------------------------------
+ */
+
+
+static void free_data ( void )
+{
+	if ( states ) free ( states );
+	if ( states_prev ) free ( states_prev );
+	if ( rule ) free ( rule );
+}
+
+static void clear_states ( void )
+{
+	int i, size=N*N*N;
+	
+	for ( i=0 ; i<=(size-1) ; i++ ) {
+ 
+		states[i] = states_prev[i] = false;
+
+	}
+	
+	states[IX2((N-1)/2,(N-1)/2,(N-1)/2)] = true;
+}
+
+
+static int allocate_data ( void )
+{
+	int size = N*N*N;
+	
+	states		= (bool *) malloc ( size*sizeof(bool) );	
+	states_prev	= (bool *) malloc ( size*sizeof(bool) );
+	rule		= (bool *) malloc ( 128*sizeof(bool) );	
+	
+	if ( !states || !states_prev || !rule) {
+		cout << "cannot allocate data";
+		return ( 0 );
+	}
+	
+	return ( 1 );
+}
+
+
+/*
+ ----------------------------------------------------------------------
+ GLUT callback routines
+ ----------------------------------------------------------------------
+ */
+
+//Called when a Special key (Up,Down Arrow etc) is pressed
+void handleSpecialKeypress(int key, int x, int y) {
+	switch (key) {
+			
+		case GLUT_KEY_UP:						 //Rotate the camera down (Scene goes up)
+			my_cam.rotateXup();
+			cout << my_cam._cameraAngleX << endl;
+			break;
+			
+		case GLUT_KEY_DOWN:						 //Rotate the camera up (Scene goes down)
+			my_cam.rotateXdown();
+			cout << my_cam._cameraAngleX << endl;
+			break;
+			
+		case GLUT_KEY_LEFT:						//Rotate the camera right (Scene goes Left)
+			key_flag = glutGetModifiers();
+			if (key_flag == GLUT_ACTIVE_SHIFT) {my_cam.rotateZup();}
+			else {
+				my_cam.rotateYup();
+				cout << my_cam._cameraAngleY << endl;
+			}
+			break;
+			
+		case GLUT_KEY_RIGHT:					//Rotate the camera left (Scene goes right)
+			key_flag = glutGetModifiers();
+			if (key_flag == GLUT_ACTIVE_SHIFT) {my_cam.rotateZdown();}
+			else {
+				my_cam.rotateYdown();
+				cout << my_cam._cameraAngleY << endl;
+			}			
+			break;
+	}
+}
+
+//Called when a key (Up,Down Arrow etc) is pressed
+void handleKeypress(unsigned char key, int x, int y) {
+	
+	switch (key) {
+			
+/*		case (102 | 70):	// "f" or "F" to enter FullScreen Mode
+			if (glutGameModeGet(GLUT_GAME_MODE_POSSIBLE)) {
+				glutEnterGameMode();		//set glut to fullscreen 
+				
+				glutDisplayFunc(drawScene);
+				
+				glutPassiveMotionFunc(mouseCameraMovement); //check for mouse motion (for camera movement)
+				glutKeyboardFunc(handleKeypress);
+				glutSpecialFunc(handleSpecialKeypress);
+				glutMouseFunc(mouseFunc);		// check for mouse button pressed and add source accordingly
+				glutMotionFunc(mouseMovement);	//check for mouse motion (with a button pressed) for disrupting fluid flow
+				glutTimerFunc(25, updateStates, 0); //Add a timer to update frames (40 fps)
+
+			}
+			else 
+				cout << "error in fullscreen mode";
+			break;
+		
+		case (103 | 71):	// "g" or "G" to get out of FullScreen Mode
+			if (glutGameModeGet(GLUT_GAME_MODE_ACTIVE)){
+				glutLeaveGameMode();
+			}
+			else 
+				cout << "error in fullscreen mode";
+			break; */
+			
+		case 27:	// Escape key
+			if (glutGameModeGet(GLUT_GAME_MODE_ACTIVE)){
+				glutLeaveGameMode();
+			}
+			free_data ();
+			exit(0);
+			break;
+						
+//--------------------------------------Begin Controlling Camera Movement-----------------------------------\\
+			
+		case 32:	// Space Bar
+			cout << my_cam._cameraDistZ << endl;
+			key_flag = glutGetModifiers();
+			if (key_flag == GLUT_ACTIVE_ALT) { my_cam.thrustForward();}
+			else {
+				my_cam.thrustBackward();
+			}
+			break;
+			
+		case (99 | 67):	// "c" or "C"
+			key_flag = glutGetModifiers();
+			if (key_flag == GLUT_ACTIVE_ALT) { my_cam.thrustLeft();}
+			else {
+				my_cam.thrustRight();
+			}
+			break;
+			
+		case (120 | 88):	// "X" or "x"
+			key_flag = glutGetModifiers();
+			if (key_flag == GLUT_ACTIVE_ALT) {my_cam.thrustUp();}
+			else {
+				my_cam.thrustDown();
+			}
+			break;
+			
+		case (65 | 97):	// 'a' or 'A'
+			my_cam.fovyUp();
+			break;
+			
+		case (90 | 122):	// 'z' or 'Z'
+			my_cam.fovyDown();
+			break;
+			
+		case (82 | 114):	// 'r' or 'R'
+			my_cam.resetCam();
+			break;
+			
+		case '/':			// Increase stateSpeed
+			stateSpeed++;
+			cout << stateSpeed << endl;
+			break;	
+			
+		case '.':			// Decrease stateSpeed
+			stateSpeed--;
+			if(stateSpeed == 0) stateSpeed = 1;
+			cout << stateSpeed << endl;
+			break;	
+			
+		case 'n':			// reset cell states
+		case 'N':
+			clear_states();
+			break;
+			
+		case 's':			// Stop / Resume updating rules
+		case 'S':
+			ruleFlag = !ruleFlag;
+			cout << ruleFlag;
+			break;	
+			
+		case 'g':			// Show / Hide Gridg
+		case 'G':
+			grid = !grid;
+			break;	
+			
+		case 'd':			// Stop / Start Billboarding
+		case 'D':
+			bb = !bb;
+			break;	
+			
+		case 'v':			// increment rule
+		case 'V':
+			ruleNumber+=1;
+			calcRule(ruleNumber);
+			cout << "rule: " << ruleNumber << endl;
+			break;
+			
+		case 'b':			// decrement rule
+		case 'B':
+			ruleNumber-=1;
+			calcRule(ruleNumber);
+			cout << "rule: " << ruleNumber << endl;
+			break;
+
+		case 'o':			// generate random rule
+		case 'O':
+			ruleNumber = ((float) rand () / (float) RAND_MAX) * pow((2*neighborhood+1),3) ;
+			calcRule(ruleNumber);
+			cout << "rule: " << ruleNumber << endl;
+			break;
+			
+		case '1':			// Change to Points
+			colorS = 1;
+			break;
+			
+		case '2':			// Change to Quads
+			colorS = 2;
+			break;
+			
+		case '3':			// Change Colors Blue
+			colorS = 3;
+			break;
+			
+		case '4':			// Change Colors Constant
+			colorS = 4;
+			break;
+
+		case '5':			// Change Colors Random
+			colorS = 5;
+			break;
+			
+		case '6':			// Change Colors Random
+			colorS = 6;
+			break;
+			
+	}
+ }
+
+static void mouseFunc ( int button, int state, int x, int y )	// glMouseFunc Callback
+{
+	prevX = currX = x;
+	prevY = currY = y;
+	prevZ = currZ = y;
+	
+	mouse_down[button] = state == GLUT_DOWN;
+}
+
+void mouseCameraMovement(int x, int y) {
+//    int diffx=x-prevX; //check the difference between the current x and the last x position
+//    int diffy=y-prevY; //check the difference between the current y and the last y position
+//    prevX=x; //set lastx to the current x position
+//    prevY=y; //set lasty to the current y position
+//	prevZ=y; //set lasty to the current y position
+//	my_cam._cameraAngleX += (float) diffy; //set the xrot to xrot with the addition	of the difference in the y position
+//    my_cam._cameraAngleY += (float) diffx;    //set the xrot to yrot with the addition of the difference in the x position
+}		// glPassiveMotionFunct Callback
+
+void mouseMovement(int x, int y) {
+//	currX = x; //set lastx to the current x position
+//  currY = y; //set lasty to the current y position
+//	currZ = y; //set lasty to the current z position
+	int diffx=x-prevX; //check the difference between the current x and the last x position
+    int diffy=y-prevY; //check the difference between the current y and the last y position
+    prevX=x; //set lastx to the current x position
+    prevY=y; //set lasty to the current y position
+	prevZ=y; //set lasty to the current y position
+	
+	my_cam._cameraAngleX += (float) diffy; //set the xrot to xrot with the addition	of the difference in the y position
+    my_cam._cameraAngleY += (float) diffx;    //set the xrot to yrot with the addition of the difference in the x position
+	
+
+}			// glMotionFunc Callback
+
+//Called when the window is resized
+void handleResize(int w, int h) {
+	width = w;
+	height = h;
+ 	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(my_cam._cameraFovy, (double)w / (double)h, 1.0, 200.0);
+}
+
+//--------------------------------------End Controlling Camera Movement-----------------------------------\\
+
+
+/*
+ ----------------------------------------------------------------------
+ OpenGL specific drawing routines
+ ----------------------------------------------------------------------
+ */
+
+//Initializes 3D rendering
+void initRendering() {
+	glClearDepth(1.0f);	
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_POLYGON_SMOOTH);
+	glDepthFunc(GL_LEQUAL); 
+	
+	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);		// Setup The Ambient Light
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);		// Setup The Diffuse Light
+	glLightfv(GL_LIGHT1, GL_SPECULAR, LightSpecular);	// Setup The Diffuse Light
+	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);	// Position The Light
+	
+//	glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient);		// Setup The Ambient Light
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse);		// Setup The Diffuse Light
+//	glLightfv(GL_LIGHT2, GL_SPECULAR, LightSpecular);	// Setup The Diffuse Light
+	glLightfv(GL_LIGHT2, GL_POSITION, LightPosition2);	// Position The Light
+		
+	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHT1);
+	glColorMaterial ( GL_FRONT_AND_BACK, GL_SPECULAR  || GL_AMBIENT_AND_DIFFUSE ) ;
+
+	glEnable(GL_COLOR_MATERIAL); //Enable color
+//	glEnable (GL_BLEND);
+//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glClearColor(0.19f, 0.44f, 0.62f, 0.5f);			//Change the background to sky blue
+	
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
+	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);					// Really Nice Point Smoothing
+
+}
+
+void glInit() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity(); //Reset the drawing perspective
+	gluPerspective(my_cam._cameraFovy, (double)width / (double)height, 1.0, 200.0);		
+	
+	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
+	glLoadIdentity(); //Reset the drawing perspective
+	
+	if (my_cam._updateCamera) my_cam.updateCam();
+	glTranslatef( my_cam._cameraDistX,  my_cam._cameraDistY, my_cam._cameraDistZ); //Move according to Camera Distance
+	
+	glRotatef(my_cam._cameraAngleX, 1.0f, 0.0f, 0.0f); //Rotate the camera
+	glRotatef(my_cam._cameraAngleY, 0.0f, 1.0f, 0.0f); //Rotate the camera
+	glRotatef(my_cam._cameraAngleZ, 0.0f, 0.0f, 1.0f); //Rotate the camera	
+}
+
+static void draw_cells ()
+{
+	
+	int i, j, k;
+	float x, y, z, h, newh, d000, d001, d010, d011, d100, d101, d110, d111;
+	float rR, rG, rB, cR, cG, cB, mR, mG, mB;
+	GLUquadricObj *sphere;
+	
+	cR = 80.0/255.0;
+	cG = 118.0/255.0;
+	cB = 18.0/255.0;
+	
+	rR = randomize();
+	rG = randomize();
+	rB = randomize();
+	
+	h = 1.0f/N;
+	newh =  1.0f/(N*1.0f);
+	
+	glPointSize(15.0f);
+	
+	for ( i = 0 ; i <= N-1 ; i++ ) {
+		x = i*h - 0.5f*newh;
+			for ( j = 0 ; j <= N-1 ; j++ ) {
+				y = j*h - 0.5f*newh;
+					for ( k = 0 ; k <= N-1 ; k++ ) {
+						z = k*h - 0.5f*newh;
+				
+						mR =  0.247; //1.0;
+						mG =  0.347; //0.388;
+						mB =  fabs (z-0.5) * 2 * 0.147; // 0.294;
+						
+						
+						if(states[IX2(i,j,k)]){
+											
+							d000 = d010 = d011 = d001 = d100 = d101 = d111 = d110 = alpha;
+						
+						switch (colorS){
+								
+							case 1:				
+		//						glDisable(GL_DEPTH_TEST);
+								glDisable(GL_LIGHTING);
+		//						glDisable(GL_LIGHT1);
+		//						glEnable(GL_LIGHT2);
+								glEnable (GL_BLEND);
+								glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+								
+								glBegin ( GL_POINTS );
+								
+								glNormal3f(1.0f, 0.0f, 0.0f);
+
+								glColor4f ( mR, mG, mB, ((fabs(z -0.5) + fabs(x -0.5 ) + fabs(y -0.5 )) /3)); glVertex3f ( x, y, z );
+			
+								glEnd();
+														
+								break;
+								
+							case 2:				
+								
+								glDisable(GL_DEPTH_TEST);
+								glDisable ( GL_TEXTURE_2D );
+								glDisable(GL_LIGHTING);
+								//						glDisable(GL_LIGHT2);
+								//glEnable(GL_LIGHT2);
+								glEnable (GL_BLEND);
+								glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+								
+								
+		//						glBegin ( GL_TRIANGLE_FAN );
+								glBegin ( GL_QUADS );
+								
+								glNormal3f(1.0f, 0.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d000 ); glVertex3f ( x, y, z );
+								glColor4f ( mR, mG, mB, d001 ); glVertex3f ( x, y, z+newh );
+								glColor4f ( mR, mG, mB, d011 ); glVertex3f ( x, y+newh, z+newh);
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x, y+newh, z );
+								
+								glNormal3f(0.0f, 1.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x, y+newh, z );
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x+newh, y+newh, z );
+								glColor4f ( mR, mG, mB, d111 ); glVertex3f ( x+newh, y+newh, z+newh );
+								glColor4f ( mR, mG, mB, d011 ); glVertex3f ( x, y+newh, z+newh );
+								
+								glNormal3f(0.0f, 0.0f, 1.0f);
+								glColor4f ( mR, mG, mB, d011 ); glVertex3f ( x, y+newh, z+newh );
+								glColor4f ( mR, mG, mB, d001 ); glVertex3f ( x, y, z+newh );
+								glColor4f ( mR, mG, mB, d101 ); glVertex3f ( x+newh, y, z+newh );
+								glColor4f ( mR, mG, mB, d111 ); glVertex3f ( x+newh, y+newh, z+newh );
+								
+								glNormal3f(-1.0f, 0.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d111 ); glVertex3f ( x+newh, y+newh, z+newh );
+								glColor4f ( mR, mG, mB, d110 ); glVertex3f ( x+newh, y+newh, z );
+								glColor4f ( mR, mG, mB, d100 ); glVertex3f ( x+newh, y, z);
+								glColor4f ( mR, mG, mB, d101 ); glVertex3f ( x+newh, y, z+newh );
+								
+								glNormal3f(0.0f, -1.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d101 ); glVertex3f ( x+newh, y, z+newh );
+								glColor4f ( mR, mG, mB, d100 ); glVertex3f ( x+newh, y, z );
+								glColor4f ( mR, mG, mB, d000 ); glVertex3f ( x, y, z );
+								glColor4f ( mR, mG, mB, d001 ); glVertex3f ( x, y, z+newh );
+								
+								glNormal3f(0.0f, 0.0f, -1.0f);
+								glColor4f ( mR, mG, mB, d000 ); glVertex3f ( x, y, z );
+								glColor4f ( mR, mG, mB, d100 ); glVertex3f ( x+newh, y, z );
+								glColor4f ( mR, mG, mB, d110 ); glVertex3f ( x+newh, y+newh, z);
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x, y+newh, z );		
+
+								glEnd();
+								
+							case 3:				
+								glDisable(GL_DEPTH_TEST);
+								//glDepthFunc(GL_LEQUAL); 
+								glDisable(GL_LIGHTING);
+								//						glDisable(GL_LIGHT2);
+								//glEnable(GL_LIGHT2);
+								glEnable (GL_BLEND);
+								glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+								
+								glBegin ( GL_TRIANGLE_STRIP );
+								
+								glNormal3f(1.0f, 0.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d000 ); glVertex3f ( x, y, z );
+								glColor4f ( mR, mG, mB, d001 ); glVertex3f ( x, y, z+newh );
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x, y+newh, z );
+								glColor4f ( mR, mG, mB, d011 ); glVertex3f ( x, y+newh, z+newh);
+								
+		//						glEnd();
+		//						glBegin ( GL_TRIANGLE_STRIP );	
+								
+								glNormal3f(0.0f, 1.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x, y+newh, z );
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x+newh, y+newh, z );
+								glColor4f ( mR, mG, mB, d011 ); glVertex3f ( x, y+newh, z+newh );
+								glColor4f ( mR, mG, mB, d111 ); glVertex3f ( x+newh, y+newh, z+newh );
+								
+		//						glEnd();
+		//						glBegin ( GL_TRIANGLE_STRIP );
+								
+								glNormal3f(0.0f, 0.0f, 1.0f);
+								glColor4f ( mR, mG, mB, d011 ); glVertex3f ( x, y+newh, z+newh );
+								glColor4f ( mR, mG, mB, d001 ); glVertex3f ( x, y, z+newh );
+								glColor4f ( mR, mG, mB, d111 ); glVertex3f ( x+newh, y+newh, z+newh );
+								glColor4f ( mR, mG, mB, d101 ); glVertex3f ( x+newh, y, z+newh );
+								
+		//						glEnd();
+		//						glBegin ( GL_TRIANGLE_STRIP );
+								
+								glNormal3f(-1.0f, 0.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d111 ); glVertex3f ( x+newh, y+newh, z+newh );
+								glColor4f ( mR, mG, mB, d110 ); glVertex3f ( x+newh, y+newh, z );
+								glColor4f ( mR, mG, mB, d101 ); glVertex3f ( x+newh, y, z+newh );
+								glColor4f ( mR, mG, mB, d100 ); glVertex3f ( x+newh, y, z);
+								
+		//						glEnd();
+		//						glBegin ( GL_TRIANGLE_STRIP );
+								
+								glNormal3f(0.0f, -1.0f, 0.0f);
+								glColor4f ( mR, mG, mB, d101 ); glVertex3f ( x+newh, y, z+newh );
+								glColor4f ( mR, mG, mB, d100 ); glVertex3f ( x+newh, y, z );
+								glColor4f ( mR, mG, mB, d001 ); glVertex3f ( x, y, z+newh );
+								glColor4f ( mR, mG, mB, d000 ); glVertex3f ( x, y, z );
+								
+		//						glEnd();
+		//						glBegin ( GL_TRIANGLE_STRIP );
+								
+								glNormal3f(0.0f, 0.0f, -1.0f);
+								glColor4f ( mR, mG, mB, d000 ); glVertex3f ( x, y, z );
+								glColor4f ( mR, mG, mB, d100 ); glVertex3f ( x+newh, y, z );
+								glColor4f ( mR, mG, mB, d010 ); glVertex3f ( x, y+newh, z );
+								glColor4f ( mR, mG, mB, d110 ); glVertex3f ( x+newh, y+newh, z);		
+								
+								glEnd();
+								
+								break;
+								
+							case 4:
+								
+								glEnable ( GL_TEXTURE_2D );
+								glBindTexture(GL_TEXTURE_2D, texture);
+								
+								glEnable(GL_DEPTH_TEST);
+								glDepthFunc(GL_LEQUAL); 
+								glEnable(GL_LIGHTING);
+								glEnable(GL_LIGHT2);
+								
+								glDisable (GL_BLEND);
+								
+							//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			// Enable Alpha Blending (disable alpha testing)
+							//	glEnable(GL_BLEND);							// Enable Blending       (disable alpha testing)
+								
+								
+								sphere = gluNewQuadric();
+								gluQuadricDrawStyle( sphere, GLU_FILL);
+								gluQuadricNormals( sphere, GLU_SMOOTH);
+								gluQuadricOrientation( sphere, GLU_OUTSIDE);
+								gluQuadricTexture( sphere, GL_TRUE);
+								
+								if (bb) {
+									billBoardBegin();
+									glPushMatrix();
+									glTranslatef(x, y, z);
+									glColor4f(1.0f, 1.0f, 1.0f, alpha);
+
+									//glutSolidSphere(h, 5, 5);
+									gluDisk( sphere, 0, h/2,  15, 15);
+									//gluSphere( sphere, h/2,  15, 15);
+									glPopMatrix();
+									billBoardEnd();
+								}
+								
+								else {
+									glPushMatrix();
+									glTranslatef(x, y, z);
+									glColor4f(1.0f, 1.0f, 1.0f, alpha);
+									
+									//glutSolidSphere(h, 5, 5);
+									gluDisk( sphere, 0, h/2,  15, 15);
+									//gluSphere( sphere, h/2,  15, 15);
+									glPopMatrix();
+								}
+								glDisable( GL_TEXTURE_2D );
+
+								break;
+								
+							case 5:
+							
+								glEnable(GL_DEPTH_TEST);
+								glDepthFunc(GL_LEQUAL); 
+								glEnable(GL_LIGHTING);
+								glEnable(GL_LIGHT2);
+								glEnable(GL_LIGHT1);
+			
+								glDisable (GL_BLEND);
+								
+								glPushMatrix();
+								glTranslatef(x, y, z);
+
+								glColor4f (0.17f, fabs (x-0.5) * 2 * 0.347f, 0.047f, 1.0f);
+								glutSolidSphere(h, 20, 20);
+								glPopMatrix();
+								
+								break;
+								
+							case 6:
+								
+								glDisable(GL_DEPTH_TEST);
+								glDisable(GL_LIGHTING);
+								
+								glEnable (GL_BLEND);
+								glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+								
+								glPushMatrix();
+								glTranslatef(x, y, z);
+								
+								glColor4f (0.17f, fabs (x-0.5) * 2 * 0.347f, 0.047f, alpha);
+								glutSolidSphere(h, 20, 20);
+								glPopMatrix();
+								
+								break;
+								
+						} 
+						
+				}
+			
+			}
+		}
+	}
+	
+}
+
+void DrawNet(GLfloat size, GLint LinesX, GLint LinesZ)
+{
+	glBegin(GL_LINES);
+	for (int xc = 0; xc < LinesX; xc++)
+	{
+		glVertex3f(	-size / 2.0 + xc / (GLfloat)(LinesX-1)*size,
+				   0.0,
+				   size / 2.0);
+		glVertex3f(	-size / 2.0 + xc / (GLfloat)(LinesX-1)*size,
+				   0.0,
+				   size / -2.0);
+	}
+	for (int zc = 0; zc < LinesX; zc++)
+	{
+		glVertex3f(	size / 2.0,
+				   0.0,
+				   -size / 2.0 + zc / (GLfloat)(LinesZ-1)*size);
+		glVertex3f(	size / -2.0,
+				   0.0,
+				   -size / 2.0 + zc / (GLfloat)(LinesZ-1)*size);
+	}
+	glEnd();
+}
+
+//Draws the Scene!!!
+void drawScene() {
+
+	pthread_t ruleThread;
+	LightPosition[0] = sinf(_angle); 
+	LightPosition[1] = sinf(_angle); 
+	LightPosition[2] = sinf(_angle); 
+	glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);	// Position The Light
+	
+	int rc = pthread_create(&ruleThread, NULL, calcNextState, NULL);	// Create another thread for calculating rules
+
+	if (rc){
+		printf("ERROR; return code from pthread_create() is %d\n", rc);
+		exit(-1);
+	}
+	
+	glInit();
+	
+	// Start Drawing Now	
+	glPushMatrix();
+	
+		glColor4f(0.998f, 0.698f, 0.07f, 0.7f);
+		//Move the camera to a nice point of view	
+		glTranslatef(-0.5f, -0.5f, -0.5f);			
+
+		draw_cells ();
+			
+//	calcNextState(states);
+	
+    glPopMatrix();
+	
+	// Draw the container
+	
+	GLfloat size = 1.1;
+	GLint LinesX = 3;
+	GLint LinesZ = 3;
+	
+	GLfloat halfsize = size / 2.0;
+	glColor4f(1.0,1.0,1.0,0.5f);
+	
+	if (grid) {
+	glPushMatrix();
+//		glRotatef(_angle, 1.0f, 1.0f, 1.0f); 
+		glPushMatrix();
+			glTranslatef(0.0,-halfsize ,0.0);
+			DrawNet(size,LinesX,LinesZ);
+			glTranslatef(0.0,size,0.0);
+			DrawNet(size,LinesX,LinesZ);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-halfsize,0.0,0.0);	
+			glRotatef(90.0,0.0,0.0,halfsize);
+			DrawNet(size,LinesX,LinesZ);
+			glTranslatef(0.0,-size,0.0);
+			DrawNet(size,LinesX,LinesZ);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.0,0.0,-halfsize);	
+			glRotatef(90.0,halfsize,0.0,0.0);
+			DrawNet(size,LinesX,LinesZ);
+			glTranslatef(0.0,size,0.0);
+			DrawNet(size,LinesX,LinesZ);
+		glPopMatrix();
+	glPopMatrix();
+	}
+	
+	glFlush();
+	glutSwapBuffers();
+//	glutPostRedisplay(); //Tell GLUT that the display has changed
+
+	rc = pthread_join(ruleThread, NULL);								// Join the thread back to the draw loop
+	if (rc) {
+		printf("ERROR; return code from pthread_join() is %d\n", rc);
+		exit(-1);
+	}
+	
+		
+}
+
+void updateStates(int argc) {
+	
+	//_angle += 0.05f; // randomize360();
+
+	if (alpha <= 0.5f && alphaFlag) alpha += 0.05f;
+	else if (alpha > 0.5f && alphaFlag) alphaFlag = 0; 
+	
+	if (alpha >= 0.0f && !alphaFlag) alpha -= 0.05f; 
+	else if (alpha < 0.0f && !alphaFlag) alphaFlag = 1; 
+	
+	glutPostRedisplay(); //Tell GLUT that the display has changed
+	
+	//Tell GLUT to call update again in 25 milliseconds = 40 fps
+	glutTimerFunc(25, updateStates, 0);		 // last argument is passed to update (value) but unused here
+}
+
+int main(int argc, char** argv) {
+
+	//Initialize GLUT
+	glutInit(&argc, argv);
+	
+		N = 13;				// N = 64 for 512x512 normally
+		source = 1;
+		ruleNumber = setRule;
+
+	dvel = 0;
+	
+	if ( !allocate_data () ) exit ( 1 );
+
+	clear_states();
+	calcRule(ruleNumber);
+//	calcReverseRule(rule);
+	
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_ALPHA);
+	glutInitWindowSize(width, height);
+//	glutGameModeString( "1280x800:32@75" );		//the settings for fullscreen mode
+	
+	//Create the window
+	win_id = glutCreateWindow(" ~ Cellular Songs ~ ");
+	initRendering();
+	
+	//Set handler functions
+	//	glutIdleFunc(idleFunc);
+
+	glutDisplayFunc(drawScene);
+	
+	glutMouseFunc(mouseFunc);					// check for mouse button pressed and add source accordingly
+	glutMotionFunc(mouseMovement);				//check for mouse motion (with a button pressed) for disrupting fluid flow
+	glutPassiveMotionFunc(mouseCameraMovement); //check for mouse motion (for camera movement)
+	glutKeyboardFunc(handleKeypress);
+	glutSpecialFunc(handleSpecialKeypress);
+	glutReshapeFunc(handleResize);
+	
+	//Load Texture
+	if(!(texture = loadTexture( "glowblu.raw", 64, 64, 1))) cout << "error loading texture";
+	
+	glutTimerFunc(25, updateStates, 0);			//Add a timer to update frames (40 fps)
+	
+	glutMainLoop();
+	
+	freeTexture( texture );
+	exit (EXIT_SUCCESS);
+}

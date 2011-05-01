@@ -1,0 +1,271 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8DD76F650486A84900D96B5E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.cpp */; settings = {ATTRIBUTES = (); }; };
+		8DD76F6A0486A84900D96B5E /* chaos.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* chaos.1 */; };
+		F627C800132481780027A181 /* textfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F627C7FE132481780027A181 /* textfile.cpp */; };
+		F6B0E67B127BE21100C0C7BA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B0E67A127BE21000C0C7BA /* OpenGL.framework */; };
+		F6B0E67F127BE21700C0C7BA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B0E67E127BE21700C0C7BA /* GLUT.framework */; };
+		F6B0E698127BE96300C0C7BA /* myCam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6B0E697127BE96300C0C7BA /* myCam.cpp */; };
+		F6D4B26D1323D8BC00150C9B /* randomize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6D4B26C1323D8BC00150C9B /* randomize.cpp */; };
+		F6F539F913020643002F8D6B /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6F539F813020643002F8D6B /* libportaudio.a */; };
+		F6F539FB13020655002F8D6B /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6F539FA13020655002F8D6B /* CoreAudio.framework */; };
+		F6F539FF1302065E002F8D6B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6F539FE1302065E002F8D6B /* AudioToolbox.framework */; };
+		F6F53A011302065E002F8D6B /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6F53A001302065E002F8D6B /* AudioUnit.framework */; };
+		F6F53A2F13020670002F8D6B /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6F53A2E13020670002F8D6B /* CoreServices.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F6A0486A84900D96B5E /* chaos.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		8DD76F6C0486A84900D96B5E /* Morphon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Morphon; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6859E8B029090EE04C91782 /* chaos.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = chaos.1; sourceTree = "<group>"; };
+		F627C7FE132481780027A181 /* textfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = textfile.cpp; sourceTree = "<group>"; };
+		F627C7FF132481780027A181 /* textfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = textfile.h; sourceTree = "<group>"; };
+		F6B0E67A127BE21000C0C7BA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		F6B0E67E127BE21700C0C7BA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		F6B0E696127BE96300C0C7BA /* myCam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myCam.h; sourceTree = "<group>"; };
+		F6B0E697127BE96300C0C7BA /* myCam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myCam.cpp; sourceTree = "<group>"; };
+		F6D34D60131C5B41000A1CDA /* portaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = portaudio.h; sourceTree = "<group>"; };
+		F6D4B26B1323D8BC00150C9B /* randomize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = randomize.h; sourceTree = "<group>"; };
+		F6D4B26C1323D8BC00150C9B /* randomize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = randomize.cpp; sourceTree = "<group>"; };
+		F6F539F813020643002F8D6B /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = portaudio/lib/.libs/libportaudio.a; sourceTree = "<group>"; };
+		F6F539FA13020655002F8D6B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		F6F539FE1302065E002F8D6B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		F6F53A001302065E002F8D6B /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		F6F53A2E13020670002F8D6B /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6B0E67B127BE21100C0C7BA /* OpenGL.framework in Frameworks */,
+				F6B0E67F127BE21700C0C7BA /* GLUT.framework in Frameworks */,
+				F6F539F913020643002F8D6B /* libportaudio.a in Frameworks */,
+				F6F539FB13020655002F8D6B /* CoreAudio.framework in Frameworks */,
+				F6F539FF1302065E002F8D6B /* AudioToolbox.framework in Frameworks */,
+				F6F53A011302065E002F8D6B /* AudioUnit.framework in Frameworks */,
+				F6F53A2F13020670002F8D6B /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* chaos */ = {
+			isa = PBXGroup;
+			children = (
+				F6D34D60131C5B41000A1CDA /* portaudio.h */,
+				F6B0E677127BE20300C0C7BA /* Frameworks */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = chaos;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				F627C7FE132481780027A181 /* textfile.cpp */,
+				F627C7FF132481780027A181 /* textfile.h */,
+				F6B0E697127BE96300C0C7BA /* myCam.cpp */,
+				F6B0E696127BE96300C0C7BA /* myCam.h */,
+				08FB7796FE84155DC02AAC07 /* main.cpp */,
+				F6D4B26B1323D8BC00150C9B /* randomize.h */,
+				F6D4B26C1323D8BC00150C9B /* randomize.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* Morphon */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859E8B029090EE04C91782 /* chaos.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		F6B0E677127BE20300C0C7BA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F6F539FA13020655002F8D6B /* CoreAudio.framework */,
+				F6F539FE1302065E002F8D6B /* AudioToolbox.framework */,
+				F6F53A001302065E002F8D6B /* AudioUnit.framework */,
+				F6F539F813020643002F8D6B /* libportaudio.a */,
+				F6B0E67A127BE21000C0C7BA /* OpenGL.framework */,
+				F6B0E67E127BE21700C0C7BA /* GLUT.framework */,
+				F6F53A2E13020670002F8D6B /* CoreServices.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* Morphon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "Morphon" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Morphon;
+			productInstallPath = "$(HOME)/bin";
+			productName = chaos;
+			productReference = 8DD76F6C0486A84900D96B5E /* Morphon */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "Morphon" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* chaos */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* Morphon */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F650486A84900D96B5E /* main.cpp in Sources */,
+				F6B0E698127BE96300C0C7BA /* myCam.cpp in Sources */,
+				F6D4B26D1323D8BC00150C9B /* randomize.cpp in Sources */,
+				F627C800132481780027A181 /* textfile.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/portaudio/lib/.libs\"",
+				);
+				PRODUCT_NAME = Morphon;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/portaudio/lib/.libs\"",
+				);
+				PRODUCT_NAME = Morphon;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "Morphon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "Morphon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

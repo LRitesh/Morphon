@@ -1,0 +1,284 @@
+Tchaos
+v3
+r1
+cCheck dependencies
+cCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/main.o /Users/Genie/Desktop/Morphon/main.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+cCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/myCam.o /Users/Genie/Desktop/Morphon/myCam.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+cCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/randomize.o /Users/Genie/Desktop/Morphon/randomize.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+cCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/textfile.o /Users/Genie/Desktop/Morphon/textfile.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+cLd /Users/Genie/Desktop/Morphon/build/Debug/chaos normal x86_64
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk
+c000000004D82E10700000000000000EE
+t1300422919
+s238
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox
+c000000004D82E0FF0000000000025CE0
+t1300422911
+s154848
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/AudioUnit.framework/AudioUnit
+c000000004D82E0FF0000000000005FA8
+t1300422911
+s24488
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/CoreAudio.framework/CoreAudio
+c000000004D82E0FF0000000000014858
+t1300422911
+s84056
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/CoreServices.framework/CoreServices
+c000000004D82E0FF000000000001A854
+t1300422911
+s108628
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/GLUT.framework/GLUT
+c000000004D82E0FF000000000001A494
+t1300422911
+s107668
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/GLUT.framework/Headers/glut.h
+c000000004B489326000000000000578C
+t1263047462
+s22412
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenGL.framework/Headers/OpenGL.h
+c000000004BD2501F0000000000001659
+t1272074271
+s5721
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenGL.framework/Headers/glu.h
+c000000004BD2501F0000000000003F84
+t1272074271
+s16260
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenGL.framework/OpenGL
+c000000004D82E100000000000000DB14
+t1300422912
+s56084
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/arpa/inet.h
+c000000004BBD2CC60000000000001533
+t1270688966
+s5427
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/math.h
+c000000004AC599B500000000000004F1
+t1254463925
+s1265
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/netinet/in.h
+c000000004CC3DE650000000000005414
+t1287904869
+s21524
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/pthread.h
+c000000004BBD2CE900000000000038F0
+t1270689001
+s14576
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/stdio.h
+c000000004BBD2CE90000000000004174
+t1270689001
+s16756
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/stdlib.h
+c000000004BBD2CE90000000000002DF5
+t1270689001
+s11765
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/string.h
+c000000004BBD2CE90000000000001731
+t1270689001
+s5937
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/sys/socket.h
+c000000004CC3DE6800000000000059BC
+t1287904872
+s22972
+
+N/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/sys/types.h
+c000000004CC3DE680000000000002905
+t1287904872
+s10501
+
+N/Users/Genie/Desktop/Morphon/build/Debug/chaos
+t1304033459
+s50084
+
+N/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/chaos.LinkFileList
+c000000004DAE7C700000000000000182
+t1303280752
+s386
+
+N/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/main.o
+t1304033459
+s80576
+
+N/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/myCam.o
+t1303297763
+s33952
+
+N/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/randomize.o
+t1303280760
+s3172
+
+N/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/textfile.o
+t1303280760
+s4912
+
+N/Users/Genie/Desktop/Morphon/main.cpp
+c000000004DB9F8B200000000000081F1
+t1304033458
+s33265
+i<iostream>
+i<stdlib.h>
+i<math.h>
+i<sys/types.h>
+i<sys/socket.h>
+i<netinet/in.h>
+i<arpa/inet.h>
+i<OpenGL/OpenGL.h>
+i<OpenGL/glu.h>
+i<GLUT/glut.h>
+i<GL/glut.h>
+i<pthread.h>
+i"myCam.h"
+i"portaudio.h"
+i"randomize.h"
+i"textfile.h"
+
+N/Users/Genie/Desktop/Morphon/myCam.cpp
+c000000004DAEBE130000000000000FD9
+t1303297555
+s4057
+i"myCam.h"
+i<iostream.h>
+
+N/Users/Genie/Desktop/Morphon/myCam.h
+c000000004DAEB1420000000000000612
+t1303294274
+s1554
+
+N/Users/Genie/Desktop/Morphon/portaudio.h
+c000000004D51C6EF000000000000AB49
+t1297204975
+s43849
+
+N/Users/Genie/Desktop/Morphon/portaudio/lib/.libs/libportaudio.a
+c00000000000000000000000000000000
+t2
+s0
+
+N/Users/Genie/Desktop/Morphon/randomize.cpp
+c000000004DA90F7000000000000001EC
+t1302925168
+s492
+i"randomize.h"
+i<stdlib.h>
+i<OpenGL/OpenGL.h>
+
+N/Users/Genie/Desktop/Morphon/randomize.h
+c000000004DA90F7500000000000000CA
+t1302925173
+s202
+
+N/Users/Genie/Desktop/Morphon/textfile.cpp
+c000000004DA90F540000000000000320
+t1302925140
+s800
+i<stdio.h>
+i<stdlib.h>
+i<string.h>
+
+N/Users/Genie/Desktop/Morphon/textfile.h
+c000000004DA90F5C0000000000000085
+t1302925148
+s133
+
+CBuild AST from /Users/Genie/Desktop/Morphon/main.cpp
+r0
+
+CBuild AST from /Users/Genie/Desktop/Morphon/myCam.cpp
+r0
+
+CBuild AST from /Users/Genie/Desktop/Morphon/randomize.cpp
+r0
+
+CBuild AST from /Users/Genie/Desktop/Morphon/textfile.cpp
+r0
+
+CCheck dependencies
+r0
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependencies8bfbaf14316ab341^5d8cb514316ab341^---0#1#0#--18"Check dependencies
+
+CCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/main.o /Users/Genie/Desktop/Morphon/main.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+s325726258.922736
+e325726259.619625
+r1
+xCompileC
+xbuild/chaos.build/Debug/chaos.build/Objects-normal/x86_64/main.o
+x/Users/Genie/Desktop/Morphon/main.cpp
+xnormal
+xx86_64
+xc++
+xcom.apple.compilers.llvmgcc42
+o/Users/Genie/Desktop/Morphon/main.cpp: In function 'void setShaders()':
+o/Users/Genie/Desktop/Morphon/main.cpp:349: warning: deprecated conversion from string constant to 'char*'
+o/Users/Genie/Desktop/Morphon/main.cpp:350: warning: deprecated conversion from string constant to 'char*'
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection45"Compile /Users/Genie/Desktop/Morphon/main.cppa851ec32306ab341^44a89e33306ab341^-284"/Users/Genie/Desktop/Morphon/main.cpp: In function 'void setShaders()':/Users/Genie/Desktop/Morphon/main.cpp:349: warning: deprecated conversion from string constant to 'char*'/Users/Genie/Desktop/Morphon/main.cpp:350: warning: deprecated conversion from string constant to 'char*'2(21%IDEActivityLogMessage2@53"Deprecated conversion from string constant to 'char*'-325726259#72#106#-1#-23%DVTTextDocumentLocation3@53"file://localhost/Users/Genie/Desktop/Morphon/main.cpp0000000000000000^348#18446744073709551615#348#18446744073709551615#18446744073709551615#0#49"Deprecated conversion from string constant to '*'--2@53"Deprecated conversion from string constant to 'char*'-325726259#178#106#-1#-3@53"file://localhost/Users/Genie/Desktop/Morphon/main.cpp0000000000000000^349#18446744073709551615#349#18446744073709551615#18446744073709551615#0#49"Deprecated conversion from string constant to '*'--0#0#0#-19%DVTDocumentLocation4@53"file://localhost/Users/Genie/Desktop/Morphon/main.cpp0000000000000000^1296"CompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/main.o main.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42    cd /Users/Genie/Desktop/Morphon    setenv LANG en_US.US-ASCII    /Developer/XCode4/usr/bin/llvm-gcc-4.2 -x c++ -arch x86_64 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/XCode4/SDKs/MacOSX10.6.sdk -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fvisibility-inlines-hidden -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-generated-files.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-own-target-headers.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-all-target-headers.hmap -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-project-headers.hmap -I/Users/Genie/Desktop/Morphon/build/Debug/include -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources/x86_64 -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources -F/Users/Genie/Desktop/Morphon/build/Debug -c /Users/Genie/Desktop/Morphon/main.cpp -o /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/main.o
+
+CCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/myCam.o /Users/Genie/Desktop/Morphon/myCam.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+s324990559.856308
+e324990563.219167
+r1
+xCompileC
+xbuild/chaos.build/Debug/chaos.build/Objects-normal/x86_64/myCam.o
+x/Users/Genie/Desktop/Morphon/myCam.cpp
+xnormal
+xx86_64
+xc++
+xcom.apple.compilers.llvmgcc42
+oIn file included from /Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/iostream.h:31,
+o                 from /Users/Genie/Desktop/Morphon/myCam.cpp:11:
+o/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h:32:2: warning: #warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated.
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection46"Compile /Users/Genie/Desktop/Morphon/myCam.cpp3751db5ff65eb341^96233863f65eb341^-629"In file included from /Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/iostream.h:31,                 from /Users/Genie/Desktop/Morphon/myCam.cpp:11:/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h:32:2: warning: #warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated.1(21%IDEActivityLogMessage2@354"#warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated.-324990560#171#458#3(36%IDEActivityLogHeaderInclusionMessage3@60"In file included from /Users/Genie/Desktop/Morphon/myCam.cpp-324990560#18446744073709551615#0#-0#-23%DVTTextDocumentLocation4@54"file://localhost/Users/Genie/Desktop/Morphon/myCam.cpp0000000000000000^10#18446744073709551615#10#18446744073709551615#18446744073709551615#0#---3@101"In file included from /Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/iostream.h-324990560#18446744073709551615#0#-0#-4@95"file://localhost/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/iostream.h0000000000000000^30#18446744073709551615#30#18446744073709551615#18446744073709551615#0#---2@445"#warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated. in /Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h-324990560#18446744073709551615#0#-0#-4@103"file://localhost/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h0000000000000000^31#18446744073709551615#31#18446744073709551615#18446744073709551615#0#---1#-4@103"file://localhost/Developer/XCode4/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h0000000000000000^31#18446744073709551615#31#18446744073709551615#18446744073709551615#0#10"#warning *--0#0#0#-19%DVTDocumentLocation5@54"file://localhost/Users/Genie/Desktop/Morphon/myCam.cpp0000000000000000^1300"CompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/myCam.o myCam.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42    cd /Users/Genie/Desktop/Morphon    setenv LANG en_US.US-ASCII    /Developer/XCode4/usr/bin/llvm-gcc-4.2 -x c++ -arch x86_64 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/XCode4/SDKs/MacOSX10.6.sdk -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fvisibility-inlines-hidden -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-generated-files.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-own-target-headers.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-all-target-headers.hmap -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-project-headers.hmap -I/Users/Genie/Desktop/Morphon/build/Debug/include -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources/x86_64 -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources -F/Users/Genie/Desktop/Morphon/build/Debug -c /Users/Genie/Desktop/Morphon/myCam.cpp -o /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/myCam.o
+
+CCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/randomize.o /Users/Genie/Desktop/Morphon/randomize.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+s324973560.100932
+e324973560.409894
+r1
+xCompileC
+xbuild/chaos.build/Debug/chaos.build/Objects-normal/x86_64/randomize.o
+x/Users/Genie/Desktop/Morphon/randomize.cpp
+xnormal
+xx86_64
+xc++
+xcom.apple.compilers.llvmgcc42
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection50"Compile /Users/Genie/Desktop/Morphon/randomize.cpp1ff319f8b35eb341^23f768f8b35eb341^---0#0#0#-19%DVTDocumentLocation2@58"file://localhost/Users/Genie/Desktop/Morphon/randomize.cpp0000000000000000^1316"CompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/randomize.o randomize.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42    cd /Users/Genie/Desktop/Morphon    setenv LANG en_US.US-ASCII    /Developer/XCode4/usr/bin/llvm-gcc-4.2 -x c++ -arch x86_64 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/XCode4/SDKs/MacOSX10.6.sdk -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fvisibility-inlines-hidden -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-generated-files.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-own-target-headers.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-all-target-headers.hmap -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-project-headers.hmap -I/Users/Genie/Desktop/Morphon/build/Debug/include -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources/x86_64 -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources -F/Users/Genie/Desktop/Morphon/build/Debug -c /Users/Genie/Desktop/Morphon/randomize.cpp -o /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/randomize.o
+
+CCompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/textfile.o /Users/Genie/Desktop/Morphon/textfile.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42
+s324973560.101875
+e324973560.312743
+r1
+xCompileC
+xbuild/chaos.build/Debug/chaos.build/Objects-normal/x86_64/textfile.o
+x/Users/Genie/Desktop/Morphon/textfile.cpp
+xnormal
+xx86_64
+xc++
+xcom.apple.compilers.llvmgcc42
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection49"Compile /Users/Genie/Desktop/Morphon/textfile.cpp98301af8b35eb341^c11950f8b35eb341^---0#0#0#-19%DVTDocumentLocation2@57"file://localhost/Users/Genie/Desktop/Morphon/textfile.cpp0000000000000000^1312"CompileC build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/textfile.o textfile.cpp normal x86_64 c++ com.apple.compilers.llvmgcc42    cd /Users/Genie/Desktop/Morphon    setenv LANG en_US.US-ASCII    /Developer/XCode4/usr/bin/llvm-gcc-4.2 -x c++ -arch x86_64 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/XCode4/SDKs/MacOSX10.6.sdk -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fvisibility-inlines-hidden -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-generated-files.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-own-target-headers.hmap -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-all-target-headers.hmap -iquote /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/chaos-project-headers.hmap -I/Users/Genie/Desktop/Morphon/build/Debug/include -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources/x86_64 -I/Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/DerivedSources -F/Users/Genie/Desktop/Morphon/build/Debug -c /Users/Genie/Desktop/Morphon/textfile.cpp -o /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/textfile.o
+
+CLd /Users/Genie/Desktop/Morphon/build/Debug/chaos normal x86_64
+s325726259.620683
+e325726259.884316
+r1
+xLd
+x/Users/Genie/Desktop/Morphon/build/Debug/chaos
+xnormal
+xx86_64
+old: warning: directory not found for option '-L/Users/Genie/Desktop/Morphon/portaudio/lib/.libs'
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Link /Users/Genie/Desktop/Morphon/build/Debug/chaosa0fb9e33306ab341^a5bbe333306ab341^-97"ld: warning: directory not found for option '-L/Users/Genie/Desktop/Morphon/portaudio/lib/.libs'1(21%IDEActivityLogMessage2@83"Directory not found for option '-L/Users/Genie/Desktop/Morphon/portaudio/lib/.libs'-325726259#0#97#-1#-23%DVTTextDocumentLocation3@-0000000000000000^18446744073709551615#18446744073709551615#18446744073709551615#18446744073709551615#18446744073709551615#0#32"Apple Mach-O Linker (ld) Warning--0#0#0#--681"Ld build/Debug/chaos normal x86_64    cd /Users/Genie/Desktop/Morphon    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/XCode4/usr/bin/llvm-g++-4.2 -arch x86_64 -isysroot /Developer/XCode4/SDKs/MacOSX10.6.sdk -L/Users/Genie/Desktop/Morphon/build/Debug -L/Users/Genie/Desktop/Morphon/portaudio/lib/.libs -F/Users/Genie/Desktop/Morphon/build/Debug -filelist /Users/Genie/Desktop/Morphon/build/chaos.build/Debug/chaos.build/Objects-normal/x86_64/chaos.LinkFileList -mmacosx-version-min=10.6 -framework OpenGL -framework GLUT -lportaudio -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreServices -o /Users/Genie/Desktop/Morphon/build/Debug/chaos
+
